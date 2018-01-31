@@ -5,17 +5,48 @@
  */
 package com.welearn.app.forms;
 
+import com.welearn.ESSController;
+import com.welearn.domain.entities.Answers;
+import com.welearn.domain.entities.QAPair;
+import com.welearn.domain.entities.QuizResult;
+import com.welearn.domain.entities.User;
+import com.welearn.domain.service.Configuration;
+import com.welearn.domain.service.QuestionService;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.util.Iterator;
+import java.util.List;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+import javax.swing.Timer;
+
 /**
  *
  * @author weiwei2017
  */
 public class QuestionsFrame extends javax.swing.JFrame {
 
+    private boolean submitted = false;
+    
+    private QuestionService questionService = new QuestionService();
+    private ESSController controller;
+    javax.swing.Timer timer;
+    Integer timeLeft;
+    Integer hintsLeft;
+    private QAPair qaPari;
     /**
      * Creates new form QuestiosFrame
      */
-    public QuestionsFrame() {
+    public QuestionsFrame(ESSController _controller) {
         initComponents();
+        setController(_controller);
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
     }
 
     /**
@@ -27,23 +58,61 @@ public class QuestionsFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        buttonGroup1 = new javax.swing.ButtonGroup();
+        answerGroup = new javax.swing.ButtonGroup();
         lblTimer = new javax.swing.JLabel();
         lblUserName = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextPane1 = new javax.swing.JTextPane();
-        jRadioButton1 = new javax.swing.JRadioButton();
-        jRadioButton2 = new javax.swing.JRadioButton();
-        jRadioButton3 = new javax.swing.JRadioButton();
-        jRadioButton4 = new javax.swing.JRadioButton();
-        jButton1 = new javax.swing.JButton();
+        rbAnswer1 = new javax.swing.JRadioButton();
+        rbAnswer2 = new javax.swing.JRadioButton();
+        rbAnswer3 = new javax.swing.JRadioButton();
+        rbAnswer0 = new javax.swing.JRadioButton();
+        btnNextQuestion = new javax.swing.JButton();
         lblSeq = new javax.swing.JLabel();
+        btnHints = new javax.swing.JButton();
+        btnSubmit = new javax.swing.JButton();
+        lblQuestion = new javax.swing.JLabel();
+        btnEnd = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
-        jScrollPane1.setViewportView(jTextPane1);
+        lblUserName.setFont(new java.awt.Font("Trebuchet MS", 3, 14)); // NOI18N
+        lblUserName.setForeground(new java.awt.Color(102, 102, 255));
 
-        jButton1.setText("Next");
+        answerGroup.add(rbAnswer1);
+
+        answerGroup.add(rbAnswer2);
+
+        answerGroup.add(rbAnswer3);
+
+        answerGroup.add(rbAnswer0);
+
+        btnNextQuestion.setText("Next");
+        btnNextQuestion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNextQuestionActionPerformed(evt);
+            }
+        });
+
+        btnHints.setText("Hints");
+        btnHints.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnHintsActionPerformed(evt);
+            }
+        });
+
+        btnSubmit.setText("Submit");
+        btnSubmit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSubmitActionPerformed(evt);
+            }
+        });
+
+        btnEnd.setText("End");
+        btnEnd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEndActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -52,107 +121,230 @@ public class QuestionsFrame extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jRadioButton1)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(lblUserName)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 263, Short.MAX_VALUE)
+                        .addComponent(lblSeq)
+                        .addGap(38, 38, 38)
+                        .addComponent(lblTimer))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jRadioButton3)
-                            .addComponent(jRadioButton2))
+                            .addComponent(rbAnswer1)
+                            .addComponent(rbAnswer2)
+                            .addComponent(rbAnswer3)
+                            .addComponent(rbAnswer0)
+                            .addComponent(lblQuestion, javax.swing.GroupLayout.Alignment.TRAILING))
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jRadioButton4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jButton1))
-                            .addComponent(jScrollPane1)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(lblUserName)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 216, Short.MAX_VALUE)
-                                .addComponent(lblSeq)
-                                .addGap(36, 36, 36)
-                                .addComponent(lblTimer, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(30, 30, 30))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnSubmit)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnHints)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnNextQuestion)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnEnd)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(lblSeq)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblSeq)
+                    .addComponent(lblTimer)
+                    .addComponent(lblUserName))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblUserName)
-                    .addComponent(lblTimer, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(39, 39, 39)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(43, 43, 43)
-                        .addComponent(jRadioButton1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jRadioButton2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jRadioButton3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jRadioButton4)
-                        .addContainerGap(29, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1)
-                        .addContainerGap())))
+                .addComponent(lblQuestion)
+                .addGap(18, 18, 18)
+                .addComponent(rbAnswer1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(rbAnswer2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(rbAnswer3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(rbAnswer0)
+                .addGap(18, 18, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnNextQuestion)
+                    .addComponent(btnHints)
+                    .addComponent(btnSubmit)
+                    .addComponent(btnEnd))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(QuestionsFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(QuestionsFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(QuestionsFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(QuestionsFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    private void btnNextQuestionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextQuestionActionPerformed
+        // TODO add your handling code here:
+        if ( (!isSubmitted()))
+        {
+            checkAnswer();
         }
-        //</editor-fold>
-        //</editor-fold>
+        loadQuestion();
+        setSubmitted(false);
+    }//GEN-LAST:event_btnNextQuestionActionPerformed
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new QuestionsFrame().setVisible(true);
+    private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
+        // TODO add your handling code here:
+        checkAnswer();
+        setSubmitted(true);
+    }//GEN-LAST:event_btnSubmitActionPerformed
+
+    private void btnHintsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHintsActionPerformed
+        // TODO add your handling code here:
+        hintsLeft = Configuration.HINT_TIME;
+        final JOptionPane msg = new JOptionPane(qaPari.getQuestion().getHint(), JOptionPane.INFORMATION_MESSAGE);
+        
+        final JDialog dlg = msg.createDialog("Hints");
+        dlg.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+        dlg.setLocationRelativeTo(this);
+        dlg.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentShown(ComponentEvent e) {
+                super.componentShown(e);
+                final Timer t = new Timer(1000,new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        dlg.setTitle("Hints is closing in " + hintsLeft + " Seconds");
+                        if(hintsLeft<=0)
+                        {
+                            dlg.setVisible(false);
+                        }
+                        hintsLeft--;
+                    }
+                });
+                t.start();
             }
         });
-    }
+        dlg.setVisible(true);
+    }//GEN-LAST:event_btnHintsActionPerformed
+
+    private void btnEndActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEndActionPerformed
+        // TODO add your handling code here:
+        controller.goSummary();
+    }//GEN-LAST:event_btnEndActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JRadioButton jRadioButton2;
-    private javax.swing.JRadioButton jRadioButton3;
-    private javax.swing.JRadioButton jRadioButton4;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextPane jTextPane1;
+    private javax.swing.ButtonGroup answerGroup;
+    private javax.swing.JButton btnEnd;
+    private javax.swing.JButton btnHints;
+    private javax.swing.JButton btnNextQuestion;
+    private javax.swing.JButton btnSubmit;
+    private javax.swing.JLabel lblQuestion;
     private javax.swing.JLabel lblSeq;
     private javax.swing.JLabel lblTimer;
     private javax.swing.JLabel lblUserName;
+    private javax.swing.JRadioButton rbAnswer0;
+    private javax.swing.JRadioButton rbAnswer1;
+    private javax.swing.JRadioButton rbAnswer2;
+    private javax.swing.JRadioButton rbAnswer3;
     // End of variables declaration//GEN-END:variables
+
+    private void render(QAPair qaPari) {
+        setTitle("Q" +qaPari.getQuestion().getqId());
+        lblQuestion.setText(qaPari.getQuestion().getDescription());
+        List<Answers> ans = qaPari.getAnwers();
+        rbAnswer0.setText(ans.get(0).getDescription()); 
+        rbAnswer1.setText(ans.get(1).getDescription()); 
+        rbAnswer2.setText(ans.get(2).getDescription()); 
+        rbAnswer3.setText(ans.get(3).getDescription()); 
+        answerGroup.clearSelection();
+        pack();
+    }
+
+    /**
+     * @return the controller
+     */
+    public ESSController getController() {
+        return controller;
+    }
+
+    /**
+     * @param controller the controller to set
+     */
+    public void setController(ESSController controller) {
+        this.controller = controller;
+    }
+
+    private void loadQuestion() {
+        if(!controller.finish())
+        {
+            qaPari =  questionService.nextQuestion();
+            render(qaPari);
+        }
+        else
+        {
+            controller.goSummary();
+        }
+    }
+
+    private void startTimer() {
+        timeLeft = Configuration.QUIZ_MAX_TIME;
+        timer = new javax.swing.Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Integer minutes =  timeLeft/60;
+                Integer seconds = timeLeft % 60;
+                lblTimer.setText(String.format("%02d", minutes) + " : " + String.format("%02d", seconds));
+                if (timeLeft <= 0) {
+                    System.out.println("======================Exame End======================");
+                    timer.stop();
+                    controller.goSummary();
+                }
+                timeLeft--;
+                if(timeLeft< Configuration.WARNING_LEVEL_1) lblTimer.setForeground(Color.blue);
+                if(timeLeft< Configuration.WARNING_LEVEL_2) lblTimer.setForeground(Color.red);
+            }
+        });
+        System.out.println("======================Exame Begin======================");
+        timer.start();
+    }
+
+    private void loadUser(User loginuser) {
+        lblUserName.setText(loginuser.getFirstname() + " " +loginuser.getLastname());
+    }
+
+    public void start() {
+        loadUser(controller.getLoginuser());
+        startTimer();
+        questionService.load();
+        loadQuestion();
+    }
+
+    /**
+     * @return the submitted
+     */
+    public boolean isSubmitted() {
+        return submitted;
+    }
+
+    /**
+     * @param submitted the submitted to set
+     */
+    public void setSubmitted(boolean submitted) {
+        this.submitted = submitted;
+        btnSubmit.setEnabled(!submitted);
+    }
+
+    private void checkAnswer() {
+        QuizResult qz;
+        if ((rbAnswer0.isSelected()&& qaPari.getAnwers().get(0).isRight()) ||
+                    (rbAnswer1.isSelected()&& qaPari.getAnwers().get(1).isRight())||
+                    (rbAnswer2.isSelected()&& qaPari.getAnwers().get(2).isRight())||
+                            (rbAnswer3.isSelected()&& qaPari.getAnwers().get(3).isRight()))
+            {
+                qz = new QuizResult(qaPari.getQuestion().getqId(), qaPari.getQuestion().getType(), 
+                        qaPari.getQuestion().getLevel(), qaPari.getQuestion().getWeight(), true);
+            }
+            else
+            {
+                qz = new QuizResult(qaPari.getQuestion().getqId(),qaPari.getQuestion().getType(), 
+                        qaPari.getQuestion().getLevel(), qaPari.getQuestion().getWeight(), false);
+            }
+            System.out.println(qz);
+            controller.updateProgress(qz);
+    }
+
 }
