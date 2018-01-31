@@ -45,8 +45,9 @@ public class QuestionsFrame extends javax.swing.JFrame {
     public QuestionsFrame(ESSController _controller) {
         initComponents();
         setController(_controller);
-        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
+        //Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        //this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
+        setLocationRelativeTo(null);
     }
 
     /**

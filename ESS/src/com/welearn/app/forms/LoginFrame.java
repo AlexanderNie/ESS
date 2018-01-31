@@ -27,8 +27,9 @@ public class LoginFrame extends javax.swing.JFrame {
     public LoginFrame(ESSController _controller) {
         initComponents();
         stamp();
-        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
+        //Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        //this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
+        setLocationRelativeTo(null);
         setController(_controller);
         _loginservice.loadUsers();
         
@@ -70,6 +71,12 @@ public class LoginFrame extends javax.swing.JFrame {
 
         lblTitle.setFont(new java.awt.Font("Bookman Old Style", 1, 18)); // NOI18N
         lblTitle.setText("Environmental System & Society");
+
+        txtPassword.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtPasswordActionPerformed(evt);
+            }
+        });
 
         lblWarning.setForeground(new java.awt.Color(255, 51, 51));
 
@@ -137,6 +144,18 @@ public class LoginFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnLoginActionPerformed
 
+    private void txtPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPasswordActionPerformed
+        // TODO add your handling code here:
+        String msg = _loginservice.ValidateUser(txtUsername.getText(), new String(txtPassword.getPassword()));
+        if (!msg.equals(LoginService.LOGIN_SUCCESS))
+            lblWarning.setText(msg);
+        else
+        {
+            controller.setupUserProfile(_loginservice.getLoginUser());
+            controller.goQuestionFrame();
+        }
+    }//GEN-LAST:event_txtPasswordActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnLogin;
@@ -166,4 +185,5 @@ public class LoginFrame extends javax.swing.JFrame {
     private void stamp() {
         lblCopyRight.setText(SecreteService.intance.getCopyRight().toLowerCase());
     }
+    
 }

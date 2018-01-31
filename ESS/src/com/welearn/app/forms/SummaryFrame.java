@@ -27,8 +27,9 @@ public class SummaryFrame extends javax.swing.JFrame {
      */
     public SummaryFrame(ESSController _controller) {
         initComponents();
-        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
+//        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+//        this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
+setLocationRelativeTo(null);
         summarySerivce.load();
         setController(_controller);
     }
